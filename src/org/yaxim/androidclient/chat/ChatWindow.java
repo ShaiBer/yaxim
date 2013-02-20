@@ -16,6 +16,7 @@ import org.yaxim.androidclient.util.StatusMode;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Window;
+import com.aniways.AniwaysIconInserter;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -251,7 +252,8 @@ public class ChatWindow extends SherlockListActivity implements OnKeyListener,
 			cm.setText(getMessageFromContextMenu(item));
 			return true;
 		case R.id.chat_contextmenu_resend:
-			sendMessage(getMessageFromContextMenu(item).toString());
+			//TODO: change back
+			//sendMessage(getMessageFromContextMenu(item));
 			Log.d(TAG, "resend!");
 			return true;
 		default:
@@ -271,14 +273,14 @@ public class ChatWindow extends SherlockListActivity implements OnKeyListener,
 
 	private void sendMessageIfNotNull() {
 		if (mChatInput.getText().length() >= 1) {
-			sendMessage(mChatInput.getText().toString());
+			sendMessage(mChatInput.getText());
 		}
 	}
 
-	private void sendMessage(String message) {
+	private void sendMessage(Editable message) {
 		mChatInput.setText(null);
 		mSendButton.setEnabled(false);
-		mServiceAdapter.sendMessage(mWithJabberID, message);
+		mServiceAdapter.sendMessage(mWithJabberID, AniwaysIconInserter.setAniwayedText(this, message));
 		if (!mServiceAdapter.isServiceAuthenticated())
 			showToastNotification(R.string.toast_stored_offline);
 	}
@@ -426,7 +428,7 @@ public class ChatWindow extends SherlockListActivity implements OnKeyListener,
 				mRowView.setBackgroundColor(0x00000000); // default is transparent
 				break;
 			}
-			getMessageView().setText(message);
+			getMessageView().setText(AniwaysIconInserter.getAniwayedText(ChatWindow.this, message));
 			getMessageView().setTextSize(TypedValue.COMPLEX_UNIT_SP, chatWindow.mChatFontSize);
 		}
 		
